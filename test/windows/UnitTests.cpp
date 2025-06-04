@@ -1536,7 +1536,7 @@ Arguments for managing Windows Subsystem for Linux:
                 Move the distribution to a new location.
 
             --set-sparse, -s <true|false>
-                Set the vhdx of distro to be sparse, allowing disk space to be automatically reclaimed.
+                Set the VHD of distro to be sparse, allowing disk space to be automatically reclaimed.
 
             --set-default-user <Username>
                 Set the default user of the distribution.
@@ -1616,11 +1616,11 @@ Arguments for managing distributions in Windows Subsystem for Linux:
                 Specifies the version to use for the new distribution.
 
             --vhd
-                Specifies that the provided file is a .vhdx file, not a tar file.
-                This operation makes a copy of the .vhdx file at the specified install location.
+                Specifies that the provided file is a .vhd or .vhdx file, not a tar file.
+                This operation makes a copy of the VHD file at the specified install location.
 
     --import-in-place <Distro> <FileName>
-        Imports the specified .vhdx file as a new distribution.
+        Imports the specified VHD file as a new distribution.
         This virtual hard disk must be formatted with the ext4 filesystem type.
 
     --list, -l [Options]
