@@ -122,7 +122,7 @@ class SimpleTests
         ValidateOutput(
             std::format(L"{} {} {} {}", WSL_MANAGE_ARG, tempDistro, WSL_MANAGE_ARG_SET_SPARSE_OPTION_LONG, L"true").c_str(),
             L"Sparse VHD support is currently disabled due to potential data corruption.\r\n"
-            L"To force a distribution to use a sparse vhd, please run:\r\n"
+            L"To force a distribution to use a sparse VHD, please run:\r\n"
             L"wsl.exe --manage <DistributionName> --set-sparse --allow-unsafe\r\nError code: Wsl/Service/E_INVALIDARG\r\n",
             L"",
             -1);
