@@ -6130,5 +6130,49 @@ Error code: Wsl/InstallDistro/WSL_E_INVALID_JSON\r\n",
         VERIFY_ARE_EQUAL(err, L"");
     }
 
+    TEST_METHOD(ExportImportVhd)
+    {
+        WSL2_TEST_ONLY();
+
+        WslShutdown();
+
+        constexpr auto vhdPath = L"exported-test-distro.vhd";
+        constexpr auto vhdxPath = L"exported-test-distro.vhdx";
+        constexpr auto exportedVhdPath = L"exported-vhd.vhd";
+        constexpr auto newDistroName = L"imported-test-distro";
+        auto cleanup = wil::scope_exit_log(WI_DIAGNOSTICS_INFO, [&]() {
+            LOG_IF_WIN32_BOOL_FALSE(DeleteFile(vhdPath));
+            LOG_IF_WIN32_BOOL_FALSE(DeleteFile(vhdxPath));
+            LOG_IF_WIN32_BOOL_FALSE(DeleteFile(exportedVhdPath));
+            LxsstuLaunchWsl(std::format(L"--unregister {}", newDistroName));
+        });
+
+        auto [out, err] = LxsstuLaunchWslAndCaptureOutput(std::format(L"--export {} {} --format vhd", LXSS_DISTRO_NAME_TEST_L, vhdxPath));
+        VERIFY_ARE_EQUAL(out, L"The operation completed successfully. \r\n");
+        VERIFY_ARE_EQUAL(err, L"");
+
+        LxsstuLaunchPowershellAndCaptureOutput(std::format(L"Convert-VHD -Path '{}' -DestinationPath '{}'", vhdxPath, vhdPath));
+
+        // Import a new distribution from the exported VHD.
+        {
+            std::tie(out, err) =
+                LxsstuLaunchWslAndCaptureOutput(std::format(L"--import {} {} {} --vhd", newDistroName, newDistroName, vhdPath));
+            VERIFY_ARE_EQUAL(out, L"The operation completed successfully. \r\n");
+            VERIFY_ARE_EQUAL(err, L"");
+
+            std::tie(out, err) =
+                LxsstuLaunchWslAndCaptureOutput(std::format(L"--export {} {} --format vhd", newDistroName, exportedVhdPath));
+            VERIFY_ARE_EQUAL(out, L"The operation completed successfully. \r\n");
+            VERIFY_ARE_EQUAL(err, L"");
+
+            // Negative variations.
+            std::tie(out, err) =
+                LxsstuLaunchWslAndCaptureOutput(std::format(L"--export {} {} --format vhd", newDistroName, vhdxPath), -1);
+            VERIFY_ARE_EQUAL(
+                out, L"The specified file must have the .vhd file extension.\r\nError code: Wsl/Service/WSL_E_EXPORT_FAILED\r\n");
+            VERIFY_ARE_EQUAL(err, L"");
+        }
+    }
+
 }; // namespace UnitTests
 } // namespace UnitTests
