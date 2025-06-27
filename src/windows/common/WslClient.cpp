@@ -363,17 +363,6 @@ int ImportDistribution(_In_ std::wstring_view commandLine)
     }
     else
     {
-        if (WI_IsFlagClear(flags, LXSS_IMPORT_DISTRO_FLAGS_VHD))
-        {
-            // Fail if expecting a tar, but the file name has the .vhd or .vhdx extension.
-            if (wsl::windows::common::string::IsPathComponentEqual(filePath.extension().native(), wsl::windows::common::wslutil::c_vhdFileExtension) ||
-                wsl::windows::common::string::IsPathComponentEqual(filePath.extension().native(), wsl::windows::common::wslutil::c_vhdxFileExtension))
-            {
-                wsl::windows::common::wslutil::PrintMessage(wsl::shared::Localization::MessagePassVhdFlag());
-                return -1;
-            }
-        }
-
         file.reset(CreateFileW(
             filePath.c_str(), GENERIC_READ, (FILE_SHARE_READ | FILE_SHARE_DELETE), nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr));
 
