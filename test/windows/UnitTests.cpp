@@ -995,7 +995,10 @@ class UnitTests
             L"Error code: Wsl/Service/RegisterDistro/ERROR_FILE_EXISTS\r\n");
 
         commandLine = std::format(L"--import dummy {} {} --version {}", LXSST_IMPORT_DISTRO_TEST_DIR, vhdFileName, version);
-        validateOutput(commandLine.c_str(), L"This looks like a VHD file. Use --vhd to import a VHD instead of a tar.\r\n");
+        validateOutput(
+            commandLine.c_str(),
+            L"This looks like a VHD file. Use --vhd to import a VHD instead of a tar.\r\n"
+            L"Error code: Wsl/Service/RegisterDistro/WSL_E_IMPORT_FAILED\r\n");
 
         if (!LxsstuVmMode())
         {
@@ -2872,7 +2875,7 @@ Error code: Wsl/InstallDistro/WSL_E_DISTRO_NOT_FOUND
             WslKeepAlive keepAlive;
             auto [out, _] = LxsstuLaunchWslAndCaptureOutput(L"--manage test_distro --resize 1500GB", -1);
             VERIFY_ARE_EQUAL(
-                L"The operation could not be completed because the vhdx is currently in use. To force WSL to stop use: "
+                L"The operation could not be completed because the VHD is currently in use. To force WSL to stop use: "
                 L"wsl.exe "
                 L"--shutdown\r\nError code: Wsl/Service/WSL_E_DISTRO_NOT_STOPPED\r\n",
                 out);
